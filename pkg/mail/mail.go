@@ -9,7 +9,7 @@ import (
 func SendValidationEmail(code string, recipient string) error {
 	websiteName := viper.GetString("name")
 	m := gomail.NewMessage()
-	m.SetHeader("From", viper.GetString("smtp_username"))
+	m.SetHeader("From", viper.GetString("smtp_from"))
 	m.SetHeader("To", recipient)
 	title := "【" + websiteName + "】验证码"
 	m.SetHeader("Subject", title)
@@ -45,7 +45,7 @@ func SendValidationEmail(code string, recipient string) error {
 func SendUnregisterValidationEmail(code string, recipient string) error {
 	websiteName := viper.GetString("name")
 	m := gomail.NewMessage()
-	m.SetHeader("From", viper.GetString("smtp_username"))
+	m.SetHeader("From", viper.GetString("smtp_from"))
 	m.SetHeader("To", recipient)
 	title := "【" + websiteName + "】验证码"
 	m.SetHeader("Subject", title)
@@ -81,7 +81,7 @@ func SendUnregisterValidationEmail(code string, recipient string) error {
 func SendPasswordNonceEmail(nonce string, recipient string) error {
 	websiteName := viper.GetString("name")
 	m := gomail.NewMessage()
-	m.SetHeader("From", viper.GetString("smtp_username"))
+	m.SetHeader("From", viper.GetString("smtp_from"))
 	m.SetHeader("To", recipient)
 	title := "欢迎您注册" + websiteName
 	m.SetHeader("Subject", title)
