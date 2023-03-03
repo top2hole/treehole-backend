@@ -136,6 +136,7 @@ func main() {
 	r.POST("/v3/edit/report/comment", serviceFallBack)
 	r.POST("/v3/security/login/check_email", serviceFallBack)
 	r.POST("/v3/security/login/create_account", serviceFallBack)
+	r.POST("/v3/security/login/oauth", serviceFallBack)
 	r.POST("/v3/security/login/login", serviceFallBack)
 	r.POST("/v3/security/login/change_password", serviceFallBack)
 	r.GET("/v3/security/devices/list", serviceFallBack)

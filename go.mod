@@ -7,23 +7,24 @@ require (
 	github.com/ProtonMail/gopenpgp/v2 v2.1.4
 	github.com/SSSaaS/sssa-golang v0.0.0-20170502204618-d37d7782d752
 	github.com/aws/aws-sdk-go v1.37.9
+	github.com/bytedance/sonic v1.8.3 // indirect
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-contrib/cors v1.3.1
-	github.com/gin-gonic/gin v1.6.3
-	github.com/go-playground/validator/v10 v10.4.1 // indirect
+	github.com/gin-gonic/gin v1.9.0
 	github.com/go-redis/cache/v8 v8.3.1
 	github.com/go-redis/redis/v8 v8.5.0
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/iancoleman/orderedmap v0.2.0
-	github.com/json-iterator/go v1.1.10 // indirect
-	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
+	github.com/leodido/go-urn v1.2.2 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
-	github.com/mattn/go-isatty v0.0.12 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/oschwald/geoip2-golang v1.4.0
 	github.com/oschwald/maxminddb-golang v1.8.0 // indirect
 	github.com/pelletier/go-toml v1.8.1 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/shirou/gopsutil/v3 v3.21.1
@@ -37,11 +38,11 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/ugorji/go v1.2.4 // indirect
+	github.com/ugorji/go/codec v1.2.10 // indirect
 	github.com/ulule/limiter/v3 v3.8.0
 	github.com/vmihailenco/msgpack/v5 v5.1.0
-	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
-	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
-	golang.org/x/text v0.3.5 // indirect
+	golang.org/x/arch v0.2.0 // indirect
+	golang.org/x/crypto v0.6.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/ezzarghili/recaptcha-go.v4 v4.3.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df

@@ -61,7 +61,7 @@ If you agree to decrypt this user's personal information, please submit the foll
 	return nil
 }
 
-func createDevice(c *gin.Context, user *base.User, pwHashed string, tx *gorm.DB) error {
+func createDevice(c *gin.Context, user *base.User, pwHashed string, tx *gorm.DB, nonce ...string) error {
 	email := strings.ToLower(c.PostForm("email"))
 	token := utils.GenToken()
 	deviceUUID := uuid.New().String()
@@ -113,11 +113,20 @@ func createDevice(c *gin.Context, user *base.User, pwHashed string, tx *gorm.DB)
 		return err4.Err
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":  0,
-		"token": token,
-		"uuid":  deviceUUID,
-	})
+	if len(nonce) > 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code":  0,
+			"token": token,
+			"uuid":  deviceUUID,
+			"nonce": nonce[0],
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"code":  0,
+			"token": token,
+			"uuid":  deviceUUID,
+		})
+	}
 	go func() {
 		_ = mail.SendPasswordNonceEmail(user.ForgetPwNonce, email)
 	}()
@@ -194,6 +203,63 @@ func createAccount(c *gin.Context) {
 		}
 
 		return createDevice(c, &user, pwHashed, tx)
+	})
+}
+
+func createTokenAccount(c *gin.Context) {
+	oldToken := c.PostForm("old_token")
+	emailHash := c.MustGet("email_hash").(string)
+	email := strings.ToLower(c.MustGet("email").(string))
+	pwHashed := c.PostForm("password_hashed")
+	emailEncrypted, err := utils.AESEncrypt(email, pwHashed)
+
+	if err != nil {
+		base.HttpReturnWithCodeMinusOneAndAbort(c, logger.NewError(err, "AESEncryptFailedInCreateAccount", consts.DatabaseEncryptFailedString))
+		return
+	}
+
+	var user base.User
+	err5 := base.GetDb(false).Where("old_email_hash = ?", emailHash).
+		Model(&base.User{}).First(&user).Error
+	if err5 == nil && user.OldToken == oldToken {
+		//	Don't need valid code
+	} else {
+		if err5 != nil && !errors.Is(err5, gorm.ErrRecordNotFound) {
+			base.HttpReturnWithCodeMinusOneAndAbort(c, logger.NewError(err5, "QueryOldEmailHashFailed", consts.DatabaseReadFailedString))
+			return
+		}
+	}
+
+	nonce := utils.GenNonce()
+	_ = base.GetDb(false).Transaction(func(tx *gorm.DB) error {
+		if err = tx.Create(&base.Email{EmailHash: emailHash}).Error; err != nil {
+			base.HttpReturnWithCodeMinusOne(c, logger.NewError(err, "CreateEmailHashFailed", consts.DatabaseWriteFailedString))
+			return err
+		}
+
+		if err5 != nil {
+			user = base.User{
+				EmailEncrypted: emailEncrypted,
+				ForgetPwNonce:  nonce,
+				Role:           base.NormalUserRole,
+			}
+			if err = tx.Create(&user).Error; err != nil {
+				base.HttpReturnWithCodeMinusOne(c, logger.NewError(err, "CreateUserFailed", consts.DatabaseWriteFailedString))
+				return err
+			}
+		} else {
+			user.OldEmailHash = ""
+			user.OldToken = ""
+			user.EmailEncrypted = emailEncrypted
+			user.UpdatedAt = time.Now()
+			user.ForgetPwNonce = nonce
+			if err = tx.Model(&base.User{}).Where("id = ?", user.ID).Updates(user).Error; err != nil {
+				base.HttpReturnWithCodeMinusOne(c, logger.NewError(err, "UpdateOldUserFailed", consts.DatabaseWriteFailedString))
+				return err
+			}
+		}
+
+		return createDevice(c, &user, pwHashed, tx, nonce)
 	})
 }
 

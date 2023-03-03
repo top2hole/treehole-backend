@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 	"strings"
 	"treehollow-v3-backend/pkg/base"
 	"treehollow-v3-backend/pkg/consts"
@@ -66,7 +65,7 @@ func deleteAccount(c *gin.Context) {
 
 		if user.CreatedAt.After(utils.GetEarliestAuthenticationTime()) {
 			base.HttpReturnWithCodeMinusOneAndAbort(c, logger.NewSimpleError("DeleteJustRegisteredAccount",
-				"注销失败，账户需要注册"+strconv.Itoa(consts.TokenExpireDays)+"天以上才可以注销。", logger.ERROR))
+				"注销失败，账户需要注册"+viper.GetString("delete_limit")+"天以上才可以注销。", logger.ERROR))
 
 			return errors.New("DeleteJustRegisteredAccount")
 		}

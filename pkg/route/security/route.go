@@ -48,6 +48,10 @@ func ApiListenHttp() {
 		checkAccountNotRegistered,
 		loginCheckIOSToken,
 		createAccount)
+	r.POST("/v3/security/login/oauth",
+		oauthTotalCheckMiddleware,
+		loginCheckIOSToken,
+		createTokenAccount)
 	r.POST("/v3/security/login/login",
 		loginParamsCheckMiddleware,
 		checkAccountIsRegistered,

@@ -244,7 +244,11 @@ func TrimText(text string, maxLength int) string {
 }
 
 func GetEarliestAuthenticationTime() time.Time {
-	return time.Now().AddDate(0, 0, -consts.TokenExpireDays)
+	return time.Now().AddDate(0, 0, -viper.GetInt("token_expire"))
+}
+
+func GetEarliestDeletionTime() time.Time {
+	return time.Now().AddDate(0, 0, -viper.GetInt("delete_limit"))
 }
 
 func UnscopedTx(tx *gorm.DB, b bool) *gorm.DB {
